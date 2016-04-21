@@ -50,7 +50,15 @@ def get_devices(output):
 
 
 
+class BTDevice(object):
+	"""
+	This class will provide some 
+	basic functions for handling bluetooth devices.
+	"""
+	pass
+
+
 if __name__ == '__main__':
 	start_service()
 	output = scan()
-	get_devices(output)		
+	get_devices(output)
