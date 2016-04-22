@@ -74,5 +74,4 @@ def main():
 
 if __name__ == '__main__':
     pass
-		host_BT_ADDR = get_host_addr()
-	
+
