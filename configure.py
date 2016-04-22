@@ -1,5 +1,5 @@
 import subprocess
-import io
+
 
 def start_service():
 	"""
@@ -11,11 +11,38 @@ def start_service():
 	    p = subprocess.Popen(command.split(), stdout = subprocess.PIPE)
 	    p.wait()
 
+def pair(addr, trust = True)
+	"""
+	pair with the device
+	"""
+	# pair with the device	
+	command = 'bluez-simple-agent hci0 {}'.format(addr) 
+	
+	p = subprocess.Popen(command.split(), stdout = subprocess.PIPE)	
+	p.wait()
+
+	
+	# check if the device is already trusted
+	command = 'bluez-test-device trusted {}'
+	p = subprocess.Popen(command.split(), stdout = subprocess.PIPE)
+	p.wait()
+	output = p.communicate()[0].decode('utf-8')	
+	
+	# trust the device so that everytime the we boot we can connect
+	if int(output) == 0 and trust == True:
+	    command = 'bluez-test-device trusted {} yes'.format(addr)
+	    p = subprocess.Popen(command.split(), stdout = subprocess.PIPE)
+	    p.wait()
+
+
 def scan():
 	"""
  	Scans for available Bluetooth devices 
 	and returns the standard output from 
 	the process as a list.
+	Reads the output and adds Bluetooth devices with 
+	their name as a key and the adress (BD_ADDR)
+	to as a value to a dictionary.
 	"""
 
  	# scan for devices
@@ -24,23 +51,14 @@ def scan():
 	# avoid zombie processes
 	p.wait()
 
-	output = p.communicate()[0]
-
 	# convert to strings to bytes
-	output = output.decode('utf-8')
- 	
-	return output.split()
+	output = p.communicate()[0].decode('utf-8')
+	output = output.split()
 
-def get_devices(output):
-	"""
-	Reads the output from the scan() and adds Bluetooth devices with 
-	their name as a key and the adress (BD_ADDR)
-	to as a value to a dictionary.
-	"""
-	devices = {}
+ 	devices = {}
 	if output:
 	    for index, item in enumerate(output):
-		    if len(item) == 17:
+		if len(item) == 17:
 			    dev = item
 			    dev_name = output[index+1] + ' ' + output[index+2]
 			    # add the device to the dictionary
@@ -48,17 +66,11 @@ def get_devices(output):
 	    for key, value in devices.items():
 		    print ('{} : {}'.format(key, value))
 
+def main():
+	start_service()	
 
 
-class BTDevice(object):
-	"""
-	This class will provide some 
-	basic functions for handling bluetooth devices.
-	"""
-	pass
 
 
 if __name__ == '__main__':
-	start_service()
-	output = scan()
-	get_devices(output)
+    
