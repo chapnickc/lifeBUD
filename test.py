@@ -1,3 +1,0 @@
-from inquiry import *
-
-scan()
