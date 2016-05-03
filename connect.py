@@ -45,4 +45,33 @@ if device:
     p.disconnect()
 
 
-    
+# -----------------------------------------------------------
+
+
+
+
+# grab the Hear Rate Service and Heart Rate Measurement UUIDs 
+HR_svc_id = btle.AssignedNumbers.heart_rate
+HR_ch_id = btle.AssignedNumbers.heart_rate_measurement 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
