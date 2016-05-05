@@ -1,7 +1,9 @@
+import sys
+
 import bluepy.btle as btle
 
-from LifeBud import *
-from HRDelegate import *
+from BluetoothModule import *
+from LifebudDelegate import *
 
 
 def main():
@@ -14,37 +16,59 @@ def main():
     try:
 
         # connect to the peripheral 
-        lb = LifeBud()
+        BT_module = BluetoothModule()
         
-        # the HRDelegate can process the HR notifications
-        lb.setDelegate(HRDelegate()) 
+        # the  can process the HR notifications
+        BT_module.setDelegate(LifebudDelegate()) 
         
         # get the heart rate service and hr mearsurement characteristic
-        service, = [s for s in lb.getServices() if s.uuid == HR_svc_id] 
+        service, = [s for s in BT_module.getServices() if s.uuid == HR_svc_id] 
         ch, = service.getCharacteristics(forUUID = str(HR_ch_id))
 
         
         # get the descriptors through range of service handles
-        desc = lb.getDescriptors(service.hndStart, service.hndEnd)
+        desc = BT_module.getDescriptors(service.hndStart, service.hndEnd)
 
         # grab the Client Characteristic Configuration descriptor by UUID 
         d, = [d for d in desc if d.uuid == ccc_id]
 
         # tell the device we want to receive notifications
-        lb.writeCharacteristic(d.handle, b'\1\0', withResponse = True)
+        BT_module.writeCharacteristic(d.handle, b'\1\0')
 
         # listen for HR values
         while True:
-            lb.waitForNotifications(3.0)
+            try:
+                BT_module.waitForNotifications(3.0)
+                values = BT_module.delegate.get_last_value()
+                print (values)
+                
+                # write the values to a log file
+                f = open('logfile.log', 'a')
+                
+                # map the tuple to a string and separate values by comma 
+                output = ','.join(map(str, values))
+                f.write(output + '\n')
+                f.close()
+
+            except:
+                pass
+#            continue
             
     # in case there is not a successful connection to the peripheral
     except btle.BTLEException as e:
         print (e)
-        lb = None
+        BT_module = None
+    except KeyboardInterrupt as e:
+        print (e)
+
+        # most likely if there is the need for a keyboard, 
+        # interrupt the device is connected.
+        BT_module.disconnect()
+        sys.exit()
 
     finally:
-        if lb:
-            lb.disconnect()
+        if BT_module:
+            BT_module.disconnect()
             print ('LifeBUD disconnected!')
 
 

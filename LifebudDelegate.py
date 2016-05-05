@@ -1,15 +1,22 @@
-
 import bluepy.btle as btle 
-import struct
 
-class HRDelegate(btle.DefaultDelegate):
+import struct
+import sys
+import time
+
+class LifebudDelegate(btle.DefaultDelegate):
     """
     for processing heart rate measurement data from
     the LifeBud peripheral
     """
 
     def __init__(self):
-        super(HRDelegate, self).__init__()
+        super(LifebudDelegate, self).__init__()
+        self.message = None
+
+    def get_last_value(self):
+        return self.message
+
 
     def handleNotification(self, cHandle, data):
         """
@@ -27,10 +34,16 @@ class HRDelegate(btle.DefaultDelegate):
             # convert the data to a heart rate value
             _, hrm = struct.unpack('BB', data)
 
+            # add the time
+            t = time.ctime()
+            
+            values = (t, hrm)
+
             #print ('cHandle: {}\ndata: {}'.format(cHandle, data))
-            print ('HR: {}'.format(hrm))
+            #print ('Time: {}\nHR: {}'.format(t, hrm))
 
-
+            # Update the last value received by the peripheral
+            self.message = values
 
 if __name__ == '__main__':
     main()
