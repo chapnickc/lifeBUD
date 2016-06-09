@@ -71,10 +71,9 @@ class LifeBud(object):
 if __name__ == '__main__':
 
     lb = LifeBud()
-    lb.scan()
-    if lb.scan():
-       lb.enable_notifications()
-       lb.listen()
+    lb.scan(timeout = 5)
+    lb.enable_notifications()
+    lb.listen()
 
 
 #    uuids = {

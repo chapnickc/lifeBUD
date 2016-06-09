@@ -1,4 +1,4 @@
-import bluepy.btle as btle 
+import bluepy.btle as btle
 
 import struct
 import sys
@@ -11,7 +11,8 @@ class LifebudDelegate(btle.DefaultDelegate):
     """
 
     def __init__(self):
-        super(LifebudDelegate, self).__init__()
+        #super(LifebudDelegate, self).__init__()
+        btle.DefaultDelegate.__init__(self)
         self.message = None
 
     def get_last_value(self):
