@@ -21,8 +21,8 @@ class LifebudDelegate(btle.DefaultDelegate):
     def handleNotification(self, cHandle, data):
         """
         This function is called by the waitForNotifications()
-        function of the parent class. 
-        
+        function of the parent class.
+
         In this case we are checking the cHandle, and processing
         the data to obtain a heart rate value
         """
@@ -36,7 +36,7 @@ class LifebudDelegate(btle.DefaultDelegate):
 
             # add the time
             t = time.ctime()
-            
+
             values = (t, hrm)
 
             #print ('cHandle: {}\ndata: {}'.format(cHandle, data))
@@ -46,6 +46,5 @@ class LifebudDelegate(btle.DefaultDelegate):
             self.message = values
 
 if __name__ == '__main__':
-    main()
-
+    pass
 
