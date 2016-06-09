@@ -9,7 +9,6 @@ class LifebudDelegate(btle.DefaultDelegate):
     for processing heart rate measurement data from
     the LifeBud peripheral
     """
-
     def __init__(self):
         #super(LifebudDelegate, self).__init__()
         btle.DefaultDelegate.__init__(self)
@@ -17,7 +16,6 @@ class LifebudDelegate(btle.DefaultDelegate):
 
     def get_last_value(self):
         return self.message
-
 
     def handleNotification(self, cHandle, data):
         """
@@ -27,7 +25,6 @@ class LifebudDelegate(btle.DefaultDelegate):
         In this case we are checking the cHandle, and processing
         the data to obtain a heart rate value
         """
-
         # check if we have a notification from the correct characteristic.
         # Note: handle of HRM characteristic is 14 in base 10
         if cHandle == 14:
