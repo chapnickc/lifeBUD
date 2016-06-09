@@ -31,105 +31,58 @@ class LifeBud(object):
             else:
                 return False
 
-        def enable_notifications(self, services):
-            pass
+    def enable_notifications(self):
 
-lb = LifeBud()
-lb.scan()
+        # grab the Client Characteristic Configuration Descriptor
+        # using its handle value in hex
+        d, = self.dev.getDescriptors(0x00F, 0x00F)
 
+        # enable notifications
+        self.dev.writeCharacteristic(d.handle, b'\1\0')
 
-services = lb.dev.discoverServices()
-
-
-uuids = {
-        'ccc': ble.AssignedNumbers.client_characteristic_configuration,
-        'HR_svc': ble.AssignedNumbers.heart_rate,
-        'HR_ch': ble.AssignedNumbers.heart_rate_measurement
-        }
-
-
-d, = lb.dev.getDescriptors(0x00F, 0x00F)
-
-lb.dev.writeCharacteristic(d.handle, b'\1\0')
+    def listen(self):
+        # listen for HR values
+        while True:
+            try:
+                self.dev.waitForNotifications(3.0)
+                values = self.dev.delegate.get_last_value()
+                print (values)
+            except ble.BTLEException as e:
+                print (e)
 
 
-for svc in services.values():
-    print ('Service: {}'.format(svc.uuid.getCommonName()))
+    def print_services(self):
 
-    # get the descriptors through range of service handles
-    desc = lb.dev.getDescriptors(0x00F, 0x00F)
+        services = self.dev.discoverServices()
 
+        for svc in services.values():
+            print ('Service: {}'.format(svc.uuid.getCommonName()))
 
-#    for d in desc:
-#        print (d, d.handle)
+            chars = svc.getCharacteristics()
+            for ix, char in enumerate(chars):
+                print ('{}. {}'.format(ix, char))
 
-    # grab the Client Characteristic Configuration descriptor by UUID 
-#    d, = [d for d in desc if d.uuid == uuids['ccc']]
-
-
-    chars = svc.getCharacteristics()
-    for ix, char in enumerate(chars):
-        print ('{}. {}'.format(ix, char))
-
-    print()
-
-#lb.dev.getCharacteristics(uuid = uuids['ccc'])
-descriptors = lb.dev.getDescriptors(startHnd= 15, endHnd = 15)
-
-try:
-
-
-    # get the heart rate service and hr mearsurement characteristic
-    service, = [s for s in lb.dev.getServices() if s.uuid == uuids['HR_svc']]
-    ch, = service.getCharacteristics(forUUID = str(uuids['HR_ch']))
-
-    # get the descriptors through range of service handles
-    desc = lb.dev.getDescriptors(service.hndStart, service.hndEnd)
-
-    # grab the Client Characteristic Configuration descriptor by UUID 
-    d, = [d for d in desc if d.uuid == uuids['ccc']]
-
-    # tell the device we want to receive notifications
-    BT_module.writeCharacteristic(d.handle, b'\1\0')
-
-    # listen for HR values
-    while True:
-        try:
-            lb.dev.waitForNotifications(3.0)
-            values = lb.dev.delegate.get_last_value()
-            print (values)
-
-            # write the values to a log file
-            f = open('logfile.log', 'a')
-
-            # map the tuple to a string and separate values by comma 
-            output = ','.join(map(str, values))
-            f.write(output + '\n')
-            f.close()
-
-        except:
-            pass
-#            continue
-# in case there is not a successful connection to the peripheral
-except btle.BTLEException as e:
-    print (e)
-    BT_module = None
-
-
-
-
-for svc in lb.dev.getServices():
-    print (svc)
-
-
+            print()
 
 
 
 
 
 if __name__ == '__main__':
+
     lb = LifeBud()
     lb.scan()
+    if lb.scan():
+       lb.enable_notifications()
+       lb.listen()
+
+
+#    uuids = {
+#            'ccc': ble.AssignedNumbers.client_characteristic_configuration,
+#            'HR_svc': ble.AssignedNumbers.heart_rate,
+#            'HR_ch': ble.AssignedNumbers.heart_rate_measurement
+#            }
+
 
 
 
