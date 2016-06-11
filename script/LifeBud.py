@@ -103,8 +103,6 @@ class LifeBud(object):
 
 
 
-
-
 if __name__ == '__main__':
     lb = LifeBud()
     lb.scan(timeout = 5)

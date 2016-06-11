@@ -27,7 +27,8 @@ class LifebudDelegate(btle.DefaultDelegate):
         """
         # check if we have a notification from the correct characteristic.
         # Note: handle of HRM characteristic is 14 in base 10
-        if cHandle == 14:
+        c_handles = {'HRM': 14, 'batt_level': 34}
+        if cHandle in c_handles.values():
 
             # convert the data to a heart rate value
             _, hrm = struct.unpack('BB', data)

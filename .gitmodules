@@ -1,0 +1,9 @@
+[submodule "BLE_HeartRate/mbed"]
+	path = BLE_HeartRate/mbed
+	url = https://github.com/mbedmicro/mbed
+[submodule "BLE_HeartRate/ble"]
+	path = BLE_HeartRate/ble
+	url = https://github.com/ARMmbed/ble
+[submodule "BLE_HeartRate/ble-nrf51822"]
+	path = BLE_HeartRate/ble-nrf51822
+	url = https://github.com/ARMmbed/ble-nrf51822
