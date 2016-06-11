@@ -1,8 +1,8 @@
 [submodule "LifeBud/mbed-src"]
-	path = BLE_HeartRate/mbed-src
+	path = LifeBud/mbed-src
 	url = https://github.com/mbedmicro/mbed
 [submodule "LifeBud/BLE_API"]
-	path = BLE_HeartRate/ble
+	path = LifeBud/BLE_API
 	url = https://github.com/ARMmbed/ble
 [submodule "LifeBud/nRF51822"]
 	path = LifeBud/nRF51822
